@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 #load dataset
-df = pd.read_csv("C:\\Users\\User\\Documents\\Projects\\Netflix_Analysis\\netflix_titles.csv")
+df = pd.read_csv("https://raw.githubusercontent.com/Hakinleye/netflix-analysis/refs/heads/main/netflix_titles.csv")
 
 #Display first 5 rows
 df.head()
