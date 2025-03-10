@@ -196,3 +196,80 @@ st.write(filtered_df)
 
 # Run the App: streamlit run app.py
 
+
+
+st.sidebar.image("netflix_logo.png", width=200)
+
+
+
+st.subheader("🎭 Top 10 Genres")
+
+# Filter by type
+content_type_filter = st.radio("Select Content Type", ["All", "Movies", "TV Shows"])
+
+# Process genres
+from collections import Counter
+genre_list = ", ".join(df["listed_in"].dropna()).split(", ")
+genre_counts = Counter(genre_list)
+genre_df = pd.DataFrame(genre_counts.items(), columns=["Genre", "Count"]).sort_values(by="Count", ascending=False).head(10)
+
+# Plot
+fig, ax = plt.subplots()
+sns.barplot(y=genre_df["Genre"], x=genre_df["Count"], palette="rocket", ax=ax)
+plt.xlabel("Number of Titles")
+st.pyplot(fig)
+
+
+
+st.subheader("🔍 Search Netflix Titles")
+
+search_query = st.text_input("Enter Movie or TV Show Name")
+
+if search_query:
+    search_results = df[df["title"].str.contains(search_query, case=False, na=False)]
+    st.write(search_results[["title", "type", "release_year", "country", "rating"]])
+else:
+    st.write("Type a title in the search box above.")
+
+
+
+
+import pydeck as pdk
+
+st.subheader("🌍 Netflix Content by Country")
+
+# Get top 10 countries
+top_countries = df["country"].value_counts().reset_index().rename(columns={"index": "Country", "country": "Count"}).head(10)
+
+# Hardcoded latitude & longitude for visualization
+country_locations = {
+    "United States": [37.0902, -95.7129],
+    "India": [20.5937, 78.9629],
+    "United Kingdom": [55.3781, -3.4360],
+    "Canada": [56.1304, -106.3468],
+    "France": [46.6034, 1.8883],
+    "Germany": [51.1657, 10.4515],
+    "Japan": [36.2048, 138.2529],
+    "South Korea": [35.9078, 127.7669],
+    "Spain": [40.4637, -3.7492],
+    "Mexico": [23.6345, -102.5528],
+}
+
+# Create a DataFrame with lat/lon data
+top_countries["lat"] = top_countries["Country"].map(lambda x: country_locations.get(x, [0, 0])[0])
+top_countries["lon"] = top_countries["Country"].map(lambda x: country_locations.get(x, [0, 0])[1])
+
+# Create the map
+map_layer = pdk.Layer(
+    "ScatterplotLayer",
+    data=top_countries,
+    get_position=["lon", "lat"],
+    get_radius="Count * 20000",
+    get_fill_color=[200, 30, 0, 140],
+    pickable=True,
+)
+
+# Display map
+map_view = pdk.ViewState(latitude=20, longitude=0, zoom=1.5)
+st.pydeck_chart(pdk.Deck(layers=[map_layer], initial_view_state=map_view))
+
