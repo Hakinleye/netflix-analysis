@@ -233,13 +233,14 @@ else:
 
 
 
-
 import pydeck as pdk
 
 st.subheader("🌍 Netflix Content by Country")
 
 # Get top 10 countries
-top_countries = df["country"].value_counts().reset_index().rename(columns={"index": "Country", "country": "Count"}).head(10)
+top_countries = df["country"].value_counts().reset_index()
+top_countries.columns = ["Country", "Count"]  # Fix column renaming
+top_countries = top_countries.head(10)
 
 # Hardcoded latitude & longitude for visualization
 country_locations = {
