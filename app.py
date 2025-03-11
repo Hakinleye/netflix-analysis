@@ -198,7 +198,7 @@ st.write(filtered_df)
 
 
 
-st.sidebar.image("netflix_logo.png", width=200)
+st.sidebar.image("https://raw.githubusercontent.com/Hakinleye/netflix-analysis/refs/heads/main/netflix_logo.png", width=200)
 
 
 
