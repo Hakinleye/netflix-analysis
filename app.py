@@ -266,7 +266,7 @@ map_layer = pdk.Layer(
     data=top_countries,
     get_position=["lon", "lat"],
     get_radius="Count * 20000",
-    get_fill_color=[200, 30, 0, 140],
+    get_fill_color=[200, 30, 0, 70],
     pickable=True,
 )
 
